@@ -1,32 +1,40 @@
 <script>
-// a class representing a dependency
-// exposing it on window is necessary for testing
+// 当前在执行的函数 / 最近被执行的函数
+let activeUpdate;
+
+// Dep
 window.Dep = class Dep {
-    constructor () {
-      this.subscribers = new Set()
-    }
+  constructor() {
+    this.descriptions = new Set();
+  }
 
-    depend () {
-      if (activeUpdate) {
-        // register the current active update as a subscriber
-        this.subscribers.add(activeUpdate)
-      }
-    }
+  depend() {
+    this.descriptions.add(activeUpdate);
+  }
 
-    notify () {
-      // run all subscriber functions
-      this.subscribers.forEach(subscriber => subscriber())
+  notify() {
+    for (const update of this.descriptions) {
+      update();
     }
+  }
 }
 
-let activeUpdate
+// 似乎我的简单做法也行
+function autorun(update) {
+  activeUpdate = update;
+  update();
+}
 
-function autorun (update) {
-  function wrappedUpdate () {
-    activeUpdate = wrappedUpdate
-    update()
-    activeUpdate = null
+// 参考答案的做法
+function _autorun(update) {
+  // wrappedUpdate 在这里是裹挟了 2 个自由变量(update & itself)的闭包
+  // 是一个标注当前真正执行某个函数的套路(尽管不是这个函数本身，而是作为调用链的一部分)
+  // 在本例的作用是在首次调用的时候间接订阅这个函数
+  function wrappedUpdate() {
+    activeUpdate = wrappedUpdate;
+    update();
+    activeUpdate = null;
   }
-  wrappedUpdate()
+  wrappedUpdate();
 }
 </script>
