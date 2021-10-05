@@ -6,13 +6,24 @@
 
 <script>
 Vue.component('example', {
+  functional: true,
   props: {
     tags: Array,
   },
-  render(h) {
-    return h('div', this.tags.map((tag, idx) => h(tag, idx)));
+  render(h, context) {
+    const { tags } = context.props;
+    return h('div', tags.map((tag, idx) => h(tag, idx)));
   }, 
 });
+
+// Vue.component('example', {
+//   props: {
+//     tags: Array,
+//   },
+//   render(h) {
+//     return h('div', this.tags.map((tag, idx) => h(tag, idx)));
+//   }, 
+// });
 
 new Vue({ el: '#app' });
 </script>
