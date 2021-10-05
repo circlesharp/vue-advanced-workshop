@@ -14,5 +14,8 @@
     "jest": "^21.0.1",
     "jsdom": "^11.2.0",
     "vue": "^2.4.2"
+  },
+  "devDependencies": {
+    "@vue/babel-plugin-jsx": "^1.1.0"
   }
 }
